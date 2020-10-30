@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+VAGRANT_VERSION = "2.2.10"
+
+Vagrant.configure("2") do |config|
+  config.vm.define "windows" do |windows|
+    windows.vm.box = "StefanScherer/windows_10" # hyper-v ready
+
+    windows.vm.provision "Info", type: "shell", path: "scripts/info.ps1"
+
+    windows.vm.provider :vmware_desktop do |v|
+      v.gui = true
+      v.memory = "15000"
+      v.cpus = 4
+      v.vmx['vhv.enable'] = 'TRUE'
+      v.vmx['vhv.allow'] = 'TRUE'
+      v.vmx["hypervisor.cpuid.0"] = "FALSE"
+    end
+
+    # TODO:
+    #
+    # A provisioner to setup Golang and other required
+    # dev tools for working on waypoint
+    # Additionally, it could install the waypoint binary directly
+    #
+    # Any additional access required to use the standard set of
+    # waypoint plugins
+  end
+end
