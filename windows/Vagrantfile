@@ -27,7 +27,15 @@ Vagrant.configure("2") do |config|
     #
     # A provisioner to setup Golang and other required
     # dev tools for working on waypoint
-    # Additionally, it could install the waypoint binary directly
+    #
+    # - For testing a specific "version" of waypoint, we can likely
+    # have a provisioner use `scoop install waypoint` so we can
+    # test the same binary that users are using.
+    #
+    # - For any kind of localy development, it might just be easiest
+    # to build the binary on the host machine and copy it over, but maybe it's
+    # also worth looking into installing Golang and related tools if people want to
+    # build directly inside the VM.
     #
     # Any additional access required to use the standard set of
     # waypoint plugins
