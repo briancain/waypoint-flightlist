@@ -3,6 +3,8 @@
 ## The Plan
 
 - Use and set up https://kind.sigs.k8s.io/ locally
+  + Follow the quick start guide to get more familiar with kind
+  + https://kind.sigs.k8s.io/docs/user/quick-start/
 
 ## Requirements
 
