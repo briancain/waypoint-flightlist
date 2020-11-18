@@ -13,3 +13,12 @@
 - kubectl installed and available on the path
   + https://kubernetes.io/docs/tasks/tools/install-kubectl/
 - A way to automate and setup a realistic but minimalist environment to test Waypoint with
+
+### Linux Steps
+
+1) kind create cluster --config config.yaml
+2) kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+3) kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+4) kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+5) Get docker subnet, and update metallb values to represent your local docker subnet
+5) kubectl apply -f metallb-config.yaml
