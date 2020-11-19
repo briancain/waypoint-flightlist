@@ -16,6 +16,8 @@
 
 ### Linux Steps
 
+_this section is a work in progress_
+
 TODO: Turn this into a script, and automate grabbing local docker subnet and placing it into metallb config
 
 1) kind create cluster --config cluster-config.yaml
@@ -24,3 +26,13 @@ TODO: Turn this into a script, and automate grabbing local docker subnet and pla
 4) kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
 5) Get docker subnet, and update metallb values to represent your local docker subnet
 5) kubectl apply -f metallb-config.yaml
+
+Now you are ready to install the waypoint server to your local kind k8s cluster
+
+TODO: if waypoint times out deploying to k8s again, try
+
+```
+kubectl get svc
+```
+
+and see if the app actually made it to the load balancer
