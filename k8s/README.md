@@ -33,9 +33,8 @@ TODO: Turn this into a script, and automate grabbing local docker subnet and pla
 Now you are ready to install the waypoint server to your local kind k8s cluster
 
 TODO: if waypoint times out deploying to k8s again, try
-
-```
-kubectl get svc
-```
-
 and see if the app actually made it to the load balancer
+
+```
+kubectl get svc -A
+```
