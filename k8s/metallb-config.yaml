@@ -9,4 +9,4 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - 172.18.0.4-172.18.0.30 # note that these must be updated from docker inspect
+      - 172.18.0.20-172.18.0.50 # note that these must be updated from docker inspect
