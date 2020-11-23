@@ -28,7 +28,7 @@ TODO: Turn this into a script, and automate grabbing local docker subnet and pla
 5) kubectl apply -f metallb-config.yaml
 6) clone demo app `codyde/hashi-demo-app`
 7) kubectl apply -f namespace.yaml
-8) kube ctl apply -f kubernetes-demoapp.yaml
+8) kubectl apply -f kubernetes-demoapp.yaml
 
 Now you are ready to install the waypoint server to your local kind k8s cluster
 
