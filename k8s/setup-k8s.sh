@@ -4,7 +4,7 @@ echo "Setting up kubernetes with kind and metallb..."
 echo
 
 echo "Creating kind cluster with cluster-config.yaml..."
-kind create cluster --config cluster-config.yaml
+kind create cluster --config configs/cluster-config.yaml
 
 echo "Applying metallb namespace..."
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
@@ -28,10 +28,10 @@ echo "IP Address range is ${IPADDR_RANGE}"
 echo
 
 sed s/%ADDR_RANGE%/$IPADDR_RANGE/g \
-   metallb-config-template.yaml > metallb-config-set.yaml
+   configs/metallb-config-template.yaml > configs/metallb-config-set.yaml
 
 echo "Applying metallb-config-set.yaml with ip address range applied..."
-kubectl apply -f metallb-config-set.yaml
+kubectl apply -f configs/metallb-config-set.yaml
 
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
 exit 0
