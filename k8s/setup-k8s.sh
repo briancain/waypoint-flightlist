@@ -1,6 +1,7 @@
 #!/bin/bash
 
-echo "Setting up kubernetes with kind and metallb...\n"
+echo "Setting up kubernetes with kind and metallb..."
+echo
 
 echo "Creating kind cluster with cluster-config.yaml..."
 kind create cluster --config cluster-config.yaml
@@ -14,10 +15,13 @@ kubectl create secret generic -n metallb-system memberlist --from-literal=secret
 echo "Applying metallb manifest..."
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
 
-echo "\n\nObtaining container IP to set as range in metallb-config.yaml..."
+echo
+echo
+echo $"Obtaining container IP to set as range in metallb-config.yaml..."
 CONTAINERID=$(docker ps -a --filter="expose=6443" -q)
 IPADDR=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINERID)
 
+echo
 echo "IP Address of networked container is ${IPADDR}"
 read -p "Enter a range to define for metallb IP Addresses based on this container (like 172.18.0.20-172.18.0.50):`echo $'\n> '` " IPADDR_RANGE
 echo "IP Address range is ${IPADDR_RANGE}"
