@@ -14,7 +14,22 @@
   + https://kubernetes.io/docs/tasks/tools/install-kubectl/
 - A way to automate and setup a realistic but minimalist environment to test Waypoint with
 
+### macOS and Windows Steps
+
+This is much easier for these platforms. Docker Desktop provides a simple way
+to setup and run kubernetes. This is the recommended approach.
+
 ### Linux Steps
+
+#### Automated
+
+Run the script inside this folder to automatically setup k8s with kind and metallb
+
+```bash
+./setup-k8s.sh
+```
+
+#### Manual
 
 _this section is a work in progress_
 
@@ -37,9 +52,19 @@ TODO: Turn this into a script, and automate grabbing local docker subnet and pla
 
 Now you are ready to install the waypoint server to your local kind k8s cluster
 
-TODO: if waypoint times out deploying to k8s again, try
-and see if the app actually made it to the load balancer
+### Debugging k8s
+
 
 ```
 kubectl get svc -A
+```
+
+```
+kubectl get all
+```
+
+Inspect a deployed application in a pod
+
+```
+kubectl describe pod/example-nodejs-01eqxfhphddst35xb04pp4m2gs-6f559cb4bd-gcfp5  
 ```
