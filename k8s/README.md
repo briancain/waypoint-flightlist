@@ -23,11 +23,18 @@ to setup and run kubernetes. This is the recommended approach.
 
 #### Automated
 
-Run the script inside this folder to automatically setup k8s with kind and metallb
+Run the script inside this folder to automatically setup k8s with kind and metallb.
+
+It will eventually ask you to write up the IP Address range for metallb based
+on the networked container created. Follow the instructions to set the address,
+and the rest should be taken care of.
 
 ```bash
 ./setup-k8s.sh
 ```
+
+After this script runs, you should be ready to run a `waypoint install` for
+the kubernetes platform!
 
 #### Manual
 
@@ -52,6 +59,8 @@ Now you are ready to install the waypoint server to your local kind k8s cluster
 
 ### Debugging k8s
 
+Just some useful `kubectl` commands for determining what's going on with your
+local k8s cluster.
 
 ```
 kubectl get svc -A
