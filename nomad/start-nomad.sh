@@ -15,7 +15,7 @@ if [ -z "$NETWORK_INTERFACE" ] ; then
 fi
 
 echo "Starting nomad agent in dev mode on ${NETWORK_INTERFACE}"
-nomad agent -dev -network-interface="${NETWORK_INTERFACE}"
+nomad agent -dev -network-interface="${NETWORK_INTERFACE}" &
 
 export NOMAD_ADDR='http://localhost:4646'
 
