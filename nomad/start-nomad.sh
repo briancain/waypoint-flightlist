@@ -7,7 +7,7 @@ if ! [ -x "$path_to_executable" ] ; then
 fi
 
 NETWORK_INTERFACE=$1
-if ! [ -x "$NETWORK_INTERFACE" ] ; then
+if [ -z "$NETWORK_INTERFACE" ] ; then
   >&2 echo "error: no interface argument given"
   echo "Usage:"
   echo "start-nomad network_interface_name"
