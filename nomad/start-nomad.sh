@@ -15,9 +15,9 @@ if [ -z "$NETWORK_INTERFACE" ] ; then
 fi
 
 echo "Starting nomad agent in dev mode on ${NETWORK_INTERFACE}"
-nomad agent -dev -network-interface="${NETWORK_INTERFACE}" &
+nomad agent -dev -network-interface="${NETWORK_INTERFACE}" > nomad.log 2>&1 &
 
 export NOMAD_ADDR='http://localhost:4646'
 
 echo
-echo "Finished!"
+echo "Finished! Logs directed to local 'nomad.log'"
