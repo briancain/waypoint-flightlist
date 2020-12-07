@@ -10,6 +10,8 @@ Inspired by the sandbox dev environment for [vagrant](https://github.com/brianca
 - kind+k8s
   + Uses kind to set up a local k8s cluster with metallb. Once set up, Waypoint
   server will be ready to install onto k8s
+- EKS
+  + _work in progress_
 - nomad
   + Uses the local nomad dev agent to start up
 - windows
