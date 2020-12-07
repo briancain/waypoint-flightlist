@@ -5,11 +5,12 @@ various plugins it supports.
 
 Inspired by the sandbox dev environment for [vagrant](https://github.com/briancain/congenial-octo-palm-tree)
 
-## Plan
+## Contents
 
-- Integrate example waypoint configs from https://github.com/hashicorp/waypoint-examples
-and use this repo to set up the required services to test.
-- Add a way to automate setting up the various scenarios with Nomad, Docker, and K8s
-- Build out a functional Windows development environment
-- Optionally include more triage specific waypoint.hcl configs that come
-up as we help folks on GitHub and Discuss
+- kind+k8s
+  + Uses kind to set up a local k8s cluster with metallb. Once set up, Waypoint
+  server will be ready to install onto k8s
+- nomad
+  + Uses the local nomad dev agent to start up
+- windows
+  + _work in progress_
