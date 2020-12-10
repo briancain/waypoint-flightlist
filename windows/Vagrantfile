@@ -23,6 +23,15 @@ Vagrant.configure("2") do |config|
       v.vmx["hypervisor.cpuid.0"] = "FALSE"
     end
 
+    windows.vm.provider :virtualbox do |v|
+      v.gui = true
+      v.memory = 1500
+      v.cpus = 4
+      v.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+    end
+
+    windows.vm.provision "Info", type: "shell", path: "scripts/dockerdesktop.ps1"
+
     # TODO:
     #
     # A provisioner to setup Golang and other required
