@@ -30,7 +30,9 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
     end
 
-    windows.vm.provision "Info", type: "shell", path: "scripts/dockerdesktop.ps1"
+    windows.vm.provision "Info", type: "shell", reboot: true, path: "scripts/dockerdesktop.ps1"
+
+    # Include waypoint-examples repo
 
     # TODO:
     #
