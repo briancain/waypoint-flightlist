@@ -20,6 +20,7 @@ echo "Creating kind cluster with cluster-config.yaml..."
 kind create cluster --config configs/cluster-config.yaml
 
 echo "Connecting registry to cluster network..."
+echo
 # connect the registry to the cluster network
 # (the network may already be connected)
 docker network connect "kind" "${reg_name}" || true
@@ -38,12 +39,15 @@ data:
 EOF
 
 echo "Applying metallb namespace..."
+echo
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
 
 echo "Create secret for metallb-system node..."
+echo
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
 echo "Applying metallb manifest..."
+echo
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
 
 echo
