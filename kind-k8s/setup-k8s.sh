@@ -1,10 +1,41 @@
 #!/bin/bash
+set -o errexit
+
+echo "Setting up local docker registry..."
+echo
+
+reg_name='kind-registry'
+reg_port='5000'
+running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
+if [ "${running}" != 'true' ]; then
+  docker run \
+    -d --restart=always -p "0.0.0.0:${reg_port}:5000" --name "${reg_name}" \
+    registry:2
+fi
 
 echo "Setting up kubernetes with kind and metallb..."
 echo
 
 echo "Creating kind cluster with cluster-config.yaml..."
 kind create cluster --config configs/cluster-config.yaml
+
+echo "Connecting registry to cluster network..."
+# connect the registry to the cluster network
+# (the network may already be connected)
+docker network connect "kind" "${reg_name}" || true
+# Document the local registry
+# https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-registry-hosting
+  namespace: kube-public
+data:
+  localRegistryHosting.v1: |
+    host: "0.0.0.0:${reg_port}"
+    help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
+EOF
 
 echo "Applying metallb namespace..."
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
