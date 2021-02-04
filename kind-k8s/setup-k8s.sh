@@ -9,7 +9,7 @@ reg_port='5000'
 running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
 if [ "${running}" != 'true' ]; then
   docker run \
-    -d --restart=always -p "0.0.0.0:${reg_port}:5000" --name "${reg_name}" \
+    -d --restart=always -p "localhost:${reg_port}:5000" --name "${reg_name}" \
     registry:2
 fi
 
@@ -33,7 +33,7 @@ metadata:
   namespace: kube-public
 data:
   localRegistryHosting.v1: |
-    host: "0.0.0.0:${reg_port}"
+    host: "localhost:${reg_port}"
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
 
