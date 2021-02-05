@@ -9,7 +9,7 @@ reg_port='5000'
 running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
 if [ "${running}" != 'true' ]; then
   docker run \
-    -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
+    -d --restart=always -p "127.0.0.1:5000:5000" --name "${reg_name}" \
     registry:2 | 2>/dev/null
 fi
 
@@ -18,6 +18,7 @@ echo
 
 echo "Creating kind cluster with cluster-config.yaml..."
 kind create cluster --config configs/cluster-config.yaml
+echo
 
 echo "Connecting registry to cluster network..."
 echo
