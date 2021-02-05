@@ -9,7 +9,7 @@ reg_port='5000'
 running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
 if [ "${running}" != 'true' ]; then
   docker run \
-    -d --restart=always -p "127.0.0.1:5000:5000" --name "${reg_name}" \
+    -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
     registry:2 | 2>/dev/null
 fi
 
@@ -17,8 +17,15 @@ echo "Setting up kubernetes with kind and metallb..."
 echo
 
 echo "Creating kind cluster with cluster-config.yaml..."
-kind create cluster --config configs/cluster-config.yaml
 echo
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
+      endpoint = ["http://${reg_name}:${reg_port}"]
+EOF
 
 echo "Connecting registry to cluster network..."
 echo
