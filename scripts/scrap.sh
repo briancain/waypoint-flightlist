@@ -13,3 +13,7 @@ function demolish() {
   halt
   docker rmi hashicorp/waypoint
 }
+
+function nuke() {
+  docker system prune -a -f
+}
