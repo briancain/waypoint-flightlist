@@ -66,7 +66,12 @@ IPADDR=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{en
 
 echo "IP Address of networked container is ${IPADDR}"
 echo
-read -p "Enter a range to define for metallb IP Addresses based on this container (like 172.18.0.20-172.18.0.50):`echo $'\n> '` " IPADDR_RANGE
+
+echo "Automatically picking an IP range based on networked contianer IP..."
+
+IPADDR_RANGE="$(awk -F"." '{print $1"."$2"."$3".20"}'<<<$IPADDR)-$(awk -F"." '{print $1"."$2"."$3".50"}'<<<$IPADDR)"
+
+#read -p "Enter a range to define for metallb IP Addresses based on this container (like 172.18.0.20-172.18.0.50):`echo $'\n> '` " IPADDR_RANGE
 echo "IP Address range is ${IPADDR_RANGE}"
 echo
 
