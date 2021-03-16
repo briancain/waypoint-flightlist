@@ -1,6 +1,7 @@
 #!/bin/bash
 
 while true; do
+  echo "$(date)"
   curl -s -o /dev/null -w "response_code=%{http_code}\n" $1 2>&1
   echo "executing 'waypoint logs'"
   echo
