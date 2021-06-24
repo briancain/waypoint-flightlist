@@ -38,3 +38,6 @@ function cleanup_docker() {
   docker volume prune -f
 }
 
+function watch_waypoint_server() {
+  docker logs -f $(docker ps -aqf "name=waypoint-server")
+}
