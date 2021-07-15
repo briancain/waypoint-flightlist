@@ -3,14 +3,13 @@
 LOGDIR="${WP_LOG_DIR:-"/tmp"}"
 DBDIR="${WP_DB_DIR:-"."}"
 
-
 echo
 echo "==> Starting waypoint server"
 echo
 echo "database dir: ${DBDIR}"
 
 waypoint server run -accept-tos -advertise-addr=127.0.0.1:9701 \
-  -listen-grpc=0.0.0.0:9701 -listen-http=0.0.0.0:9702 -db=debe.db \
+  -listen-grpc=0.0.0.0:9701 -listen-http=0.0.0.0:9702 -db=$DBDIR/debe.db \
   -advertise-tls-skip-verify -url-enabled -vvv > $LOGDIR/wp-server-logs.txt 2>&1 &
 
 echo
