@@ -18,7 +18,7 @@ bootstrap your CLI context once the server has been installed.
 
 ### Server and runner logs
 
-When your server and runner start with `waypoint-local.sh`, they write their
+When your server and runner start with `setup-waypoint-local.sh`, they write their
 logs to specific txt files (by default, they go to `/tmp`). You can use tools
 like `tail` or `multitail` to watch the server and runner logs.
 
