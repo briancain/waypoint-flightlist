@@ -10,7 +10,7 @@ _Note_: This method for running Waypoint is not officially supported in any way.
 It is mainly for developers and contributors to have an easy way to bring up
 a server and runner for local development and is not expected to run in production.
 
-## waypoint-local.sh
+## setup-waypoint-local.sh
 
 This script will automatically start up a server and a runner locally using
 the `waypoint` binary configured to your local path. It will automatically
