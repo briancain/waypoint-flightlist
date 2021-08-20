@@ -1,5 +1,12 @@
 #!/bin/bash
+
+# NOTE(briancain): This script uses 'kind' to automatically bring up a local
+# kubernetes cluster. It includes optional support for configuring an
+# Ingress controller node.
+
 set -o errexit
+
+setupIngress=$WP_K8S_INGRESS
 
 echo "Setting up local docker registry..."
 echo
@@ -16,16 +23,46 @@ fi
 echo "Setting up kubernetes with kind and metallb..."
 echo
 
-echo "Creating kind cluster with cluster-config.yaml..."
-echo
+if [ "${setupIngress}" != '' ]; then
+  echo "Creating kind cluster with ingress controller..."
+  echo
 cat <<EOF | kind create cluster --config=-
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-containerdConfigPatches:
-- |-
-  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
-      endpoint = ["http://${reg_name}:${reg_port}"]
+  kind: Cluster
+  apiVersion: kind.x-k8s.io/v1alpha4
+  containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
+        endpoint = ["http://${reg_name}:${reg_port}"]
+  nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
+    extraPortMappings:
+    - containerPort: 80
+      hostPort: 80
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      protocol: TCP
 EOF
+
+else
+  echo "Creating kind cluster with cluster-config.yaml..."
+  echo
+cat <<EOF | kind create cluster --config=-
+  kind: Cluster
+  apiVersion: kind.x-k8s.io/v1alpha4
+  containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
+        endpoint = ["http://${reg_name}:${reg_port}"]
+EOF
+
+fi
 
 echo "Connecting registry to cluster network..."
 echo
@@ -46,6 +83,7 @@ data:
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
 
+echo
 echo "Applying metallb namespace..."
 echo
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
@@ -81,5 +119,15 @@ sed s/%ADDR_RANGE%/$IPADDR_RANGE/g \
 echo "Applying metallb-config-set.yaml with ip address range applied..."
 kubectl apply -f configs/metallb-config-set.yaml
 
+if [ "${setupIngress}" != '' ]; then
+	echo
+	echo "Setting up Contour ingress controller..."
+	echo
+
+	kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
+	kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
+fi
+
+echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
 exit 0
