@@ -43,8 +43,8 @@ and the rest should be taken care of.
 
 ##### Env Var options
 
-- `WP_K8S_INGRESS` - setting this var will include ingress configuration for the
-setup k8s cluster.
+- `WP_K8S_INGRESS` - setting this var to any non-empty value will include
+ingress configuration for the setup k8s cluster.
 
 After this script runs, you should be ready to run a `waypoint install` for
 the kubernetes platform!
