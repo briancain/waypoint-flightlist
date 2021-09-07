@@ -121,16 +121,16 @@ sed s/%ADDR_RANGE%/$IPADDR_RANGE/g \
 echo "Applying metallb-config-set.yaml with ip address range applied..."
 kubectl apply -f configs/metallb-config-set.yaml
 
-if [ "${setupIngress}" != '' ]; then
-	echo
-	echo "Setting up NGINX ingress controller..."
-	echo
+if [ -n "${setupIngress}" ]; then
+  echo
+  echo "Setting up NGINX ingress controller..."
+  echo
 
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
-  # TODO: add a switch that lets people pick between the two
-	#kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
-	#kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
+  # NOTE: uncomment this if you wish to use contour
+  #kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
+  #kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 fi
 
 echo
