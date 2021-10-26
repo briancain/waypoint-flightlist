@@ -4,3 +4,11 @@ client {
     read_only = false
   }
 }
+
+plugin "docker" {
+  config {
+    auth {
+      config = "/home/brian/.docker/config.json"
+    }
+  }
+}
