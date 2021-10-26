@@ -15,9 +15,9 @@ if [ -z "$NETWORK_INTERFACE" ] ; then
 fi
 
 echo "Starting nomad agent in dev mode on ${NETWORK_INTERFACE}"
-nomad agent -dev -config=client.hcl -network-interface="${NETWORK_INTERFACE}" > nomad.log 2>&1 &
+nomad agent -dev -config=client.hcl -network-interface="${NETWORK_INTERFACE}" -bind=0.0.0.0 > nomad.log 2>&1 &
 
-export NOMAD_ADDR='http://localhost:4646'
+export NOMAD_ADDR='http://0.0.0.0:4646'
 
 echo
 echo "Finished! Logs directed to local 'nomad.log'"
