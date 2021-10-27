@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# Helper Script for profiling performance issues
-# This script refreshes an apps status a bunch of times to populate Waypoint Servers Database
-
 declare -i iterations=0
 
 while true; do
-  # TODO turn app into an argument
-  time waypoint status -app=tetris -refresh
-  iterations+=1
+  waypoint up -var image="localhost:5000/tetris" -var registry_local=false
 
+  declare -i i=0
+  while (( ++i <= 10 )); do
+    time waypoint status -app=tetris -refresh
+    sleep 2
+  done
+
+  iterations+=1
   echo
-  echo "$iterations total refreshes"
+  echo "$iterations total iterations"
+  echo "$i total refreshes"
   echo
 
   sleep 2
