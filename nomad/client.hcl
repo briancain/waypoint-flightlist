@@ -1,5 +1,5 @@
 consul {
-  address = "192.168.0.158:8500"
+  address = "192.168.1.4:8500"
 }
 
 client {
