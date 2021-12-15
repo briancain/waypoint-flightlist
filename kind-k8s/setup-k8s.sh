@@ -136,9 +136,7 @@ fi
 echo "Setting up docker secrets into Kubernetes cluster"
 echo
 
-kubectl create secret generic regcred \ 
-  --from-file=.dockerconfigjson=$HOME/.docker/config.json \
-  --type=kubernetes.io/dockerconfigjson
+kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
 
 echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
