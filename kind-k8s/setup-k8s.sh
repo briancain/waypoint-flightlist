@@ -133,6 +133,13 @@ if [ -n "${setupIngress}" ]; then
   #kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 fi
 
+echo "Setting up docker secrets into Kubernetes cluster"
+echo
+
+kubectl create secret generic regcred \ 
+  --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+  --type=kubernetes.io/dockerconfigjson
+
 echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
 exit 0
