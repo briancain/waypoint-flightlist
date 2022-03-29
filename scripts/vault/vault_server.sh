@@ -6,16 +6,16 @@ if ! [ -x "$path_to_executable" ] ; then
   exit 1
 fi
 
-NETWORK_INTERFACE=$1
-if [ -z "$NETWORK_INTERFACE" ] ; then
-  >&2 echo "error: no interface argument given"
+LISTEN_ADDR=$1
+if [ -z "$LISTEN_ADDR" ] ; then
+  >&2 echo "error: no listen address argument given"
   echo "Usage:"
-  echo "vault_server network_interface_name"
+  echo "vault_server listen_address"
   exit 1
 fi
 
-echo "Starting vault server in dev mode on ${NETWORK_INTERFACE}"
-vault server -dev -dev-listen-address="${NETWORK_INTERFACE}" > vault.log 2>&1 &
+echo "Starting vault server in dev mode on ${LISTEN_ADDR}"
+vault server -dev -dev-listen-address="${LISTEN_ADDR}" > vault.log 2>&1 &
 
 echo
 echo "Finished! Logs directed to local 'vault.log'"
