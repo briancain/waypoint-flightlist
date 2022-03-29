@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# NOTE: you will need to export the Vault Listen ADDR as well as the token
+# to get a local vault client to talk to the server.
+
 path_to_executable=$(which vault)
 if ! [ -x "$path_to_executable" ] ; then
   >&2 echo "error: vault not defined on path"
