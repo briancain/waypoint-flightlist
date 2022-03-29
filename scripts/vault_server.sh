@@ -16,3 +16,6 @@ fi
 
 echo "Starting vault server in dev mode on ${NETWORK_INTERFACE}"
 vault server -dev -dev-listen-address="${NETWORK_INTERFACE}" > vault.log 2>&1 &
+
+echo
+echo "Finished! Logs directed to local 'vault.log'"
