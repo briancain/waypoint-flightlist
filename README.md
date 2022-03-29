@@ -17,5 +17,7 @@ Inspired by the sandbox dev environment for [vagrant](https://github.com/brianca
   + Follow the HashiCorp Learn guide that uses Terraform to set up aws-eks
 - nomad
   + Uses the local nomad dev agent to start up
+- scripts
+  + Various local dev bash scripts used for this project
 - windows
   + _work in progress_
