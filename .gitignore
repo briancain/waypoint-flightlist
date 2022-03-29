@@ -1,3 +1,4 @@
 metallb-config-set.yaml
 *.db
 waypoint-restore.db.lock
+*.log
