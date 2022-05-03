@@ -132,10 +132,6 @@ if [ -n "${setupIngress}" ]; then
   echo
 
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-
-  # NOTE: uncomment this if you wish to use contour
-  #kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
-  #kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 fi
 
 echo
