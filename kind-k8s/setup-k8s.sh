@@ -145,5 +145,12 @@ echo "Setting up metrics server into Kubernetes cluster"
 kubectl apply -f insecure_metrics_server.yaml
 
 echo
+echo "WARNING! Setting up admin role to give API access to all users."
+echo "This is intended for DEV ONLY!"
+
+kubectl create clusterrolebinding serviceaccounts-cluster-admin \
+    --clusterrole=cluster-admin --group=system:serviceaccounts
+
+echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
 exit 0
