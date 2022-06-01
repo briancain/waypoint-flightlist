@@ -145,8 +145,8 @@ echo "Setting up metrics server into Kubernetes cluster"
 kubectl apply -f insecure_metrics_server.yaml
 
 echo
-echo "WARNING! Setting up admin role to give API access to all users."
-echo "This is intended for DEV ONLY!"
+echo -e "\033[0;33m WARNING! Setting up admin role to give API access to all users."
+echo -e "\033[0;33m This is intended for DEV ONLY!"
 
 kubectl create clusterrolebinding serviceaccounts-cluster-admin \
     --clusterrole=cluster-admin --group=system:serviceaccounts
