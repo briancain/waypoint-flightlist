@@ -153,5 +153,89 @@ kubectl create clusterrolebinding serviceaccounts-cluster-admin \
     --clusterrole=cluster-admin --group=system:serviceaccounts
 
 echo
+echo "Setting up Consul and Vault into Kubernetes"
+echo
+
+# Automate setting up vault and consul
+
+# Install consul and vault into cluster
+helm repo update
+helm install consul hashicorp/consul --values helm/helm-consul-values.yaml
+# wait until consul is reporting ready....
+echo
+echo "Waiting for consul pods to report ready..."
+echo
+while [[ $(kubectl get pods -l app=consul -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True True" ]]; do echo "waiting for consul server..." && sleep 5; done
+echo
+
+helm install vault hashicorp/vault --values helm/helm-vault-values.yaml
+# wait until vault is reporting ready....
+echo
+echo "Waiting for vault pods to report ready..."
+echo
+# They just need to exist, not be "Ready". Unsealing the vault pods makes them ready
+sleep 15
+
+echo
+echo "Setting up vault..."
+echo
+
+# Initialize and unseal vault
+# Save keys to .json file
+# vault operator unseal on all vault pods
+kubectl exec vault-0 -- vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+VAULT_UNSEAL_KEY=$(cat cluster-keys.json | jq -r ".unseal_keys_b64[]")
+kubectl exec vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY
+kubectl exec vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY
+kubectl exec vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY
+
+echo
+echo "Setting up Waypoint vault secrets for container registry..."
+echo
+
+# Set a secret
+# vault login with root token
+# TODO: make sure ever exec has the root token
+VAULT_TOKEN=$(cat cluster-keys.json | jq -r ".root_token")
+# enable vault kv version 2
+echo "Enabling vault kv version 2 secrets"
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault secrets enable -path=secret kv-v2"
+# create secrets!!!
+REG_USER=$(cat reg.json | jq -r ".registry_username")
+REG_PASS=$(cat reg.json | jq -r ".registry_password")
+echo "Creating the secrets..."
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault kv put secret/registry registry_username=$REG_USER registry_password=$REG_PASS"
+
+echo "Enabling kubernetes auth for Waypoint..."
+# Enable kubernetes auth
+# there are 3-ish steps here which include getting the k8s cluster IP
+# Add a kubectl exec vault-0 to all of these
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault auth enable kubernetes"
+
+# Get service/kubernetes cluster-ip
+KUBE_SVC_ADDR=$(kubectl describe service/kubernetes | grep IP: | awk '{print $2;}' | xargs)
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault write auth/kubernetes/config kubernetes_host=\"https://$KUBE_SVC_ADDR:443\""
+
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault policy write waypoint - <<EOF
+path \"secret/data/registry\" {
+  capabilities = [\"read\"]
+}
+EOF"
+
+kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault write auth/kubernetes/role/waypoint \
+      bound_service_account_names=vault \
+      bound_service_account_namespaces=default \
+      policies=waypoint \
+      ttl=24h"
+
+# Update the dynamic config sourcer plugin to use the vault service addr
+# NOTE: we can't do this until Waypoint is installed....
+#waypoint config source-set -type=vault -config=addr=http://SERVICE-VAULT-ADDR:8200 -config=token=ADD_ME
+
+VAULT_SVC_ADDR=$(kubectl describe service/vault | grep IP: | awk '{print $2;}' | xargs)
+
+echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
+echo
+echo "Vault Service Address: $VAULT_SVC_ADDR"
 exit 0
