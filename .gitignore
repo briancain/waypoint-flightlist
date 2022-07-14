@@ -5,3 +5,4 @@ waypoint-restore.db.lock
 
 # Vault stuff
 cluster-keys.json
+reg.json
