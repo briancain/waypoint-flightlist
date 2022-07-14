@@ -195,7 +195,6 @@ echo
 
 # Set a secret
 # vault login with root token
-# TODO: make sure ever exec has the root token
 VAULT_TOKEN=$(cat cluster-keys.json | jq -r ".root_token")
 # enable vault kv version 2
 echo "Enabling vault kv version 2 secrets"
@@ -228,14 +227,13 @@ kubectl exec vault-0 -- /bin/sh -c "VAULT_TOKEN=$VAULT_TOKEN vault write auth/ku
       policies=waypoint \
       ttl=24h"
 
-# Update the dynamic config sourcer plugin to use the vault service addr
-# NOTE: we can't do this until Waypoint is installed....
-#waypoint config source-set -type=vault -config=addr=http://SERVICE-VAULT-ADDR:8200 -config=token=ADD_ME
-
+# Grab the vault service addr for configuring Waypoints Vault dynamic config sourcer plugin
 VAULT_SVC_ADDR=$(kubectl describe service/vault | grep IP: | awk '{print $2;}' | xargs)
 
 echo
 echo "Done! You should be ready to 'waypoint install -platform=kubernetes -accept-tos' on a local kubernetes!"
 echo
 echo "Vault Service Address: $VAULT_SVC_ADDR"
+echo "To configure Waypoint to use the Vault dynamic config sourcer plugin, run this command after installing Waypoint:"
+echo "waypoint config source-set -type=vault -config=addr=http://$VAULT_SVC_ADDR:8200 -config=token=$VAULT_TOKEN"
 exit 0
