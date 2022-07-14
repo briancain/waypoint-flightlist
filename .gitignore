@@ -2,3 +2,6 @@ metallb-config-set.yaml
 *.db
 waypoint-restore.db.lock
 *.log
+
+# Vault stuff
+cluster-keys.json
