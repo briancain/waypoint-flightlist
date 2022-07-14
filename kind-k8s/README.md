@@ -17,15 +17,16 @@ so users can get started quickly without figuring all of this out on their own.
 ## Requirements
 
 - Docker installed locally
-- Golang 1.11+ installed locally
+- Golang 1.17+ installed locally
 - kubectl installed and available on the path
   + https://kubernetes.io/docs/tasks/tools/install-kubectl/
-- A way to automate and setup a realistic but minimalist environment to test Waypoint with
+- Helm
 
 ### macOS and Windows Steps
 
 This is much easier for these platforms. Docker Desktop provides a simple way
-to setup and run kubernetes. This is the recommended approach.
+to setup and run kubernetes. This is the recommended approach rather than using
+kind + k8s.
 
 ### Linux Steps
 
@@ -74,6 +75,7 @@ the kubernetes platform!
 9) If ingress support is desired:
 	* kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
 	* kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
+10) TODO: write steps for automatically installing and setting up consul and vault clusters
 
 ### Setup waypoint
 
